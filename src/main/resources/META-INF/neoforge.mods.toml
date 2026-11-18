@@ -1,0 +1,24 @@
+modLoader="javafml"
+loaderVersion="[4,)"
+license="MIT"
+
+[[mods]]
+modId="create_bannerways"
+version="1.0.0-beta"
+displayName="Create: Bannerways"
+authors="Timothy"
+description= "An advanced flag crafting and physics mod integrating Create Aeronautics & Atmospheric."
+
+[[dependencies.create_bannerways]]
+modId="neoforge"
+type="required"
+versionRange="[21.1,)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.create_bannerways]]
+modId="minecraft"
+type="required"
+versionRange="[1.21.1,1.22)"
+ordering="NONE"
+side="BOTH"
