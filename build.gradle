@@ -1,0 +1,69 @@
+plugins {
+    id 'java-library'
+    id 'net.neoforged.moddev' version '1.0.17'
+}
+
+version = '1.0.0-beta'
+group = 'com.simibubi.create_bannerways'
+
+base {
+    archivesName = 'create_bannerways'
+}
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
+
+neoForge {
+    version = '21.1.58'
+
+    runs {
+        client {
+            client()
+            systemProperty 'neoforge.enabledGameTestNamespaces', 'create_bannerways'
+        }
+        server {
+            server()
+        }
+    }
+
+    mods {
+        create_bannerways {
+            sourceSet sourceSets.main
+        }
+    }
+}
+
+repositories {
+    maven { url = "https://maven.createmod.net" }
+    maven { url = "https://maven.tterrag.com" }
+    maven { url = "https://maven.blamejared.com" }
+    maven { url = "https://cursemaven.com" }
+    flatDir {
+        dirs 'libs'
+    }
+    exclusiveContent {
+        forRepository {
+            maven { url = "https://maven.ryanhcode.dev/releases" }
+        }
+        filter {
+            includeGroup("dev.ryanhcode.sable-companion")
+        }
+    }
+}
+
+dependencies {
+    jarJar(api("dev.ryanhcode.sable-companion:sable-companion-common-1.21.1:[${project.sable_companion_version},)")) {
+        version {
+            prefer(project.sable_companion_version)
+        }
+    }
+    // Any local .jar files you drop into a 'libs' folder will be loaded automatically:
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    // Commented out placeholder external dependencies so the base mod compiles standalone first.
+    // Once you have the exact 1.21.1 JARs or CurseMaven file IDs, uncomment or drop them in /libs:
+    // implementation "curse.maven:create-328085:XXXXXXX"
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
