@@ -1,14 +1,6 @@
-<<<<<<< HEAD
 {
   "parent": "minecraft:item/generated",
   "textures": {
     "layer0": "create_bannerways:item/flag_item"
   }
-=======
-{
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "create_bannerways:item/flag_item"
-  }
->>>>>>> de6f1fb397100ea2d8eec953bcf83cbf139d181c
 }

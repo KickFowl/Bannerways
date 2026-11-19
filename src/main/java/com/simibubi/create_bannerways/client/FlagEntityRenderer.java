@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LightLayer;
 
@@ -65,7 +66,8 @@ public class FlagEntityRenderer extends EntityRenderer<FlagEntity> {
 
     @Override
     public boolean shouldRender(FlagEntity entity, Frustum frustum, double camX, double camY, double camZ) {
-        return true;
+        // No frustum test (the cloth extends well beyond the entity's box), but respect the render distance
+        return entity.shouldRender(camX, camY, camZ);
     }
 
     @Override
@@ -95,6 +97,10 @@ public class FlagEntityRenderer extends EntityRenderer<FlagEntity> {
             double wx = Mth.lerp(partialTick, p.px, p.x);
             double wy = Mth.lerp(partialTick, p.py, p.y);
             double wz = Mth.lerp(partialTick, p.pz, p.z);
+            if (p.pinned && i < gridW) {
+                Vec3 pinned = flag.renderPinnedPos(i, partialTick);
+                if (pinned != null) { wx = pinned.x; wy = pinned.y; wz = pinned.z; }
+            }
             rx[i] = wx - ex;
             ry[i] = wy - ey;
             rz[i] = wz - ez;

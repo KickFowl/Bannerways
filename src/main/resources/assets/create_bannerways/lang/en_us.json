@@ -1,4 +1,5 @@
 {
   "block.create_bannerways.flag_station": "Flag Station",
-  "item.create_bannerways.flag_item": "Bannerway Flag"
+  "item.create_bannerways.flag_item": "Bannerway Flag",
+  "entity.create_bannerways.flag": "Flag"
 }

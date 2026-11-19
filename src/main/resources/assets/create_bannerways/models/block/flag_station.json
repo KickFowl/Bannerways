@@ -1,14 +1,6 @@
-<<<<<<< HEAD
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
     "all": "create_bannerways:block/flag_station"
   }
-=======
-{
-  "parent": "minecraft:block/cube_all",
-  "textures": {
-    "all": "create_bannerways:block/flag_station"
-  }
->>>>>>> de6f1fb397100ea2d8eec953bcf83cbf139d181c
 }

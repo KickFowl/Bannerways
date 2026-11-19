@@ -14,7 +14,6 @@ import java.lang.reflect.Method;
  *
  * Reads Create: Atmospherics' wind through reflection, so it is an optional dependency:
  *   WindsSim.forLevel(level).sampleWind(level, x, y, z) -> org.joml.Vector3d
- * Also supports sampleWindWorld(Object, x, y, z) when available for sub-level contexts.
  *
  * Without Atmospherics installed a gentle procedural breeze is used.
  */
@@ -33,25 +32,20 @@ public final class FlagWind {
     private static Method getOrNull;       // static WindsSim.getOrNull(Level) -> Simulation
     private static Method forLevel;        // static WindsSim.forLevel(Level)  -> Simulation
     private static Method sampleWind;      // Simulation.sampleWind(Level, double, double, double) -> Vector3d
-    private static Method sampleWindWorld; // Simulation.sampleWindWorld(Object, double, double, double) -> Vector3d
     private static boolean loggedFailure = false;
 
     private FlagWind() {}
 
     public static Vec3 sample(Level level, Vec3 worldPos) {
         if (!resolved) resolve();
-        if (sampleWind != null || sampleWindWorld != null) {
+        if (sampleWind != null) {
             try {
                 Object sim = getOrNull != null ? getOrNull.invoke(null, level) : null;
                 if (sim == null && forLevel != null) sim = forLevel.invoke(null, level);
                 if (sim != null) {
-                    Vector3d w = null;
-                    if (sampleWindWorld != null) {
-                        w = (Vector3d) sampleWindWorld.invoke(sim, level, worldPos.x, worldPos.y, worldPos.z);
-                    }
-                    if (w == null && sampleWind != null) {
-                        w = (Vector3d) sampleWind.invoke(sim, level, worldPos.x, worldPos.y, worldPos.z);
-                    }
+                    // World-space sample. The cloth already simulates in world space with relative-velocity
+                    // aerodynamics, so ship motion is accounted for; apparent/local wind would double count it.
+                    Vector3d w = (Vector3d) sampleWind.invoke(sim, level, worldPos.x, worldPos.y, worldPos.z);
                     if (w != null) {
                         return new Vec3(w.x, w.y, w.z).scale(UNITS_TO_BLOCKS_PER_TICK);
                     }
@@ -59,8 +53,9 @@ public final class FlagWind {
             } catch (Throwable t) {
                 if (!loggedFailure) {
                     loggedFailure = true;
-                    LOG.warn("[create_bannerways] Atmospherics wind lookup failed; falling back to ambient breeze", t);
+                    LOG.warn("[create_bannerways] Atmospherics wind lookup failed; using ambient breeze", t);
                 }
+                sampleWind = null; // stop retrying (and throwing) every tick
             }
         }
         double time = level.getGameTime() * 0.01;
@@ -74,9 +69,6 @@ public final class FlagWind {
             try { getOrNull = sims.getMethod("getOrNull", Level.class); } catch (NoSuchMethodException ignored) {}
             forLevel = sims.getMethod("forLevel", Level.class);
             Class<?> simClass = forLevel.getReturnType();
-            try {
-                sampleWindWorld = simClass.getMethod("sampleWindWorld", Object.class, double.class, double.class, double.class);
-            } catch (NoSuchMethodException ignored) {}
             sampleWind = simClass.getMethod("sampleWind", Level.class, double.class, double.class, double.class);
             LOG.info("[create_bannerways] Using Create: Atmospherics wind");
         } catch (ClassNotFoundException e) {
