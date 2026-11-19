@@ -1,5 +1,12 @@
+<<<<<<< HEAD
 {
   "variants": {
     "": { "model": "create_bannerways:block/flag_station" }
   }
+=======
+{
+  "variants": {
+    "": { "model": "create_bannerways:block/flag_station" }
+  }
+>>>>>>> de6f1fb397100ea2d8eec953bcf83cbf139d181c
 }

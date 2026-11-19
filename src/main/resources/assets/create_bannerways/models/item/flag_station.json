@@ -1,3 +1,8 @@
+<<<<<<< HEAD
 {
   "parent": "create_bannerways:block/flag_station"
+=======
+{
+  "parent": "create_bannerways:block/flag_station"
+>>>>>>> de6f1fb397100ea2d8eec953bcf83cbf139d181c
 }
